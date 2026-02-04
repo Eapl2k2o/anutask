@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Simple Drag To-Do</title>
+    <link rel="stylesheet" href="todolist.css"
+</head>
+<body>
+    <h2>To-Do List</h2>
+    <input id="taskInput" placeholder="Enter a task..." onkeypress="if(event.keyCode==13) addTask()">
+    <button onclick="addTask()">Add Task</button>
+    <ul id="taskList"></ul>
+
+    <script>
+        // Load tasks from localStorage or start empty
+        let tasks = JSON.parse(localStorage.getItem('todoTasks')) || [];
+        let draggedItem = null;
+
+        function render() {
+            let list = document.getElementById('taskList');
+            list.innerHTML = '';
+            
+            for (let i = 0; i < tasks.length; i++) {
+                let li = document.createElement('li');
+                li.draggable = true;
+                li.id = 'task-' + i;
+                
+                // Task text with done state
+                let text = tasks[i].done ? '✓ ' + tasks[i].text : tasks[i].text;
+                li.innerHTML = '<span ondblclick="toggle(' + i + ')">' + text + 
+                              '</span><span class="delete" onclick="remove(' + i + ')">×</span>';
+                
+                // Add visual feedback class
+                if (tasks[i].done) li.className = 'done';
+                
+                // Drag events
+                li.ondragstart = function(e) {
+                    draggedItem = this;
+                    this.className += ' dragging';
+                };
+                li.ondragend = function(e) {
+                    this.className = this.className.replace(' dragging', '');
+                };
+                
+                list.appendChild(li);
+            }
+            save();
+        }
+
+        function addTask() {
+            let input = document.getElementById('taskInput');
+            if (input.value.trim()) {
+                tasks.push({text: input.value.trim(), done: false});
+                input.value = '';
+                render();
+            }
+        }
+
+        function toggle(i) {
+            tasks[i].done = !tasks[i].done;
+            render();
+        }
+
+        function remove(i) {
+            tasks.splice(i, 1);
+            render();
+        }
+
+        function save() {
+            localStorage.setItem('todoTasks', JSON.stringify(tasks));
+        }
+
+        // Drag & Drop for entire list
+        document.getElementById('taskList').ondragover = function(e) {
+            e.preventDefault();
+        };
+        
+        document.getElementById('taskList').ondrop = function(e) {
+            e.preventDefault();
+            if (draggedItem) {
+                this.appendChild(draggedItem);
+            }
+        };
+
+        // Start app
+        render();
+    </script>
+</body>
+</html>
