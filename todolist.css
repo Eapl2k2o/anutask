@@ -1,0 +1,17 @@
+
+        body { font-family: Arial; max-width: 500px; margin: 50px auto; padding: 20px; }
+        input { padding: 10px; width: 300px;background-color: antiquewhite;}
+        button { padding: 10px 15px; background: #4CAF50; color: white; border: none; }
+        ul { list-style: none; padding: 0; }
+        li { 
+            padding: 15px; 
+            margin: 8px 0; 
+            background: #f9f9f9; 
+            border: 2px solid #ddd;
+            cursor: move;
+            user-select: none;
+        }
+        li:hover { background: #f0f0f0; }
+        li.dragging { opacity: 0.5; background: #e0e0e0; }
+        .done { text-decoration: line-through; color: #888; }
+        .delete { float: right; color: red; cursor: pointer; margin-left: 10px; }
